@@ -20,8 +20,6 @@ struct Cli {
 #[derive(Eq, PartialEq, Subcommand)]
 enum Command {
     All,
-    BigSha2,
-    IterSha2,
 }
 
 fn main() {
@@ -30,11 +28,7 @@ fn main() {
 
     let prover = String::from("risczero");
 
-    if cli.command == Command::All || cli.command == Command::BigSha2 {
-        run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
-    }
-
-    if cli.command == Command::All || cli.command == Command::IterSha2 {
-        run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
-    }
+    run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
+    run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
+    run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
 }
