@@ -196,7 +196,7 @@ dependencies = [
 [[package]]
 name = "bonsai-sdk"
 version = "0.2.0"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "reqwest",
  "serde",
@@ -1570,7 +1570,7 @@ dependencies = [
 [[package]]
 name = "risc0-binfmt"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "anyhow",
  "elf",
@@ -1583,7 +1583,7 @@ dependencies = [
 [[package]]
 name = "risc0-build"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "cargo_metadata",
  "directories",
@@ -1601,7 +1601,7 @@ dependencies = [
 [[package]]
 name = "risc0-build-kernel"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "cc",
  "directories",
@@ -1614,7 +1614,7 @@ dependencies = [
 [[package]]
 name = "risc0-circuit-rv32im"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "anyhow",
  "log",
@@ -1631,7 +1631,7 @@ dependencies = [
 [[package]]
 name = "risc0-circuit-rv32im-sys"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "glob",
  "risc0-build-kernel",
@@ -1642,7 +1642,7 @@ dependencies = [
 [[package]]
 name = "risc0-core"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "bytemuck",
  "rand_core",
@@ -1651,7 +1651,7 @@ dependencies = [
 [[package]]
 name = "risc0-sys"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "cc",
  "glob",
@@ -1662,7 +1662,7 @@ dependencies = [
 [[package]]
 name = "risc0-zkp"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "anyhow",
  "blake2",
@@ -1688,7 +1688,7 @@ dependencies = [
 [[package]]
 name = "risc0-zkvm"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 dependencies = [
  "addr2line",
  "anyhow",
@@ -1723,7 +1723,7 @@ dependencies = [
 [[package]]
 name = "risc0-zkvm-platform"
 version = "0.16.1"
-source = "git+https://github.com/risc0/risc0.git#c2df930c3cb4d70281e859fe744b7a37a46550fa"
+source = "git+https://github.com/risc0/risc0.git?rev=d4d2037de50ff849d024397497345855fedecccb#d4d2037de50ff849d024397497345855fedecccb"
 
 [[package]]
 name = "risczero-benchmark-methods"
