@@ -31,4 +31,5 @@ fn main() {
     run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
     run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
     run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
+    run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
 }
