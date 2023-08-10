@@ -63,20 +63,18 @@ impl Benchmark for Job<'_> {
         &self.spec
     }
 
-    // TODO: investigate why the guest computation diverges from that computed by [sha2].
-    // fn host_compute(&mut self) -> Option<Self::ComputeOut> {
-    //     let mut data = Vec::from([0u8; 32]);
-    //     println!("spec = {}", self.spec);
+    fn host_compute(&mut self) -> Option<Self::ComputeOut> {
+        let mut data = Vec::from([0u8; 32]);
 
-    //     for _i in 0..self.spec {
-    //         use sha2::Digest;
-    //         let mut hasher = sha2::Sha256::new();
-    //         hasher.update(&data);
-    //         data = hasher.finalize().to_vec();
-    //     }
+        for _i in 0..self.spec {
+            use sha2::Digest;
+            let mut hasher = sha2::Sha256::new();
+            hasher.update(&data);
+            data = hasher.finalize().to_vec();
+        }
 
-    //     Some(risc0_zkvm::sha::Digest::try_from(data.as_slice()).unwrap())
-    // }
+        Some(risc0_zkvm::sha::Digest::try_from(data.as_slice()).unwrap())
+    }
 
     fn guest_compute(&mut self) -> (Self::ComputeOut, Self::ProofType) {
         let Receipt { inner, journal } =
@@ -84,6 +82,7 @@ impl Benchmark for Job<'_> {
 
         let guest_output: Digest =
             from_slice(&journal).expect("Journal output should output to data committed by guest");
+
         (guest_output, Receipt { inner, journal })
     }
 

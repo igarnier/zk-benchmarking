@@ -12,9 +12,9 @@ pub fn main() {
 
     let mut digest = Impl::hash_bytes(data.as_slice());
 
-    for _ in 1..=num_iter {
+    for _ in 1..num_iter {
         digest = Impl::hash_bytes(digest.as_bytes());
     }
 
-    env::commit(&digest.as_bytes())
+    env::commit(&digest)
 }
