@@ -9,3 +9,5 @@
 .DS_Store
 risczero/methods/guest/Cargo.lock
 rustbench/Cargo.lock
+
+risczero/**/*csv
