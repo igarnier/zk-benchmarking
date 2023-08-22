@@ -20,6 +20,11 @@ struct Cli {
 #[derive(Eq, PartialEq, Subcommand)]
 enum Command {
     All,
+    IterEcdsa,
+    IterSha2,
+    BigSha2,
+    Fact,
+    BubbleSort,
 }
 
 fn main() {
@@ -28,9 +33,28 @@ fn main() {
 
     let prover = String::from("risczero");
 
-    run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());
-    // run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
-    // run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
-    // run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
-    // run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+    match cli.command {
+        Command::All => {
+            let _ = run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());
+            let _ = run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
+            let _ = run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
+            let _ = run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
+            let _ = run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+        }
+        Command::IterEcdsa => {
+            let _ = run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());
+        }
+        Command::IterSha2 => {
+            let _ = run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
+        }
+        Command::BigSha2 => {
+            let _ = run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
+        }
+        Command::Fact => {
+            let _ = run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
+        }
+        Command::BubbleSort => {
+            let _ = run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+        }
+    }
 }
