@@ -20,6 +20,7 @@ struct Cli {
 #[derive(Eq, PartialEq, Subcommand)]
 enum Command {
     All,
+    EcdsaThenHashes,
     IterEcdsa,
     IterSha2,
     BigSha2,
@@ -40,6 +41,13 @@ fn main() {
             let _ = run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
             let _ = run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
             let _ = run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+        }
+        Command::EcdsaThenHashes => {
+            let _ = run_jobs::<ecdsa_then_hashes::Job>(
+                &prover,
+                &cli.out,
+                ecdsa_then_hashes::new_jobs(),
+            );
         }
         Command::IterEcdsa => {
             let _ = run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());

@@ -16,7 +16,7 @@ pub struct Spec {
     encoded_verifying_key: EncodedPoint,
     message: Vec<u8>,
     signature: Signature,
-    niter: u32,
+    nhashes: u32,
 }
 
 pub struct Job<'a> {
@@ -25,7 +25,7 @@ pub struct Job<'a> {
     pub prover: Rc<dyn Prover>,
 }
 
-fn gen_spec(niter: u32) -> Spec {
+fn gen_spec(nhashes: u32) -> Spec {
     // Generate a random secp256k1 keypair and sign the message.
     let signing_key = SigningKey::random(&mut OsRng);
     let message = b"32 bytes message, including this";
@@ -35,16 +35,16 @@ fn gen_spec(niter: u32) -> Spec {
         encoded_verifying_key: verifying_key.to_encoded_point(true),
         message: message.to_vec(),
         signature,
-        niter,
+        nhashes,
     }
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    [1, 2, 3, 4].map(gen_spec).to_vec()
+    [0, 50, 100, 150, 250, 500, 1000].map(gen_spec).to_vec()
 }
 
-const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ITER_ECDSA_ID;
-const METHOD_ELF: &[u8] = risczero_benchmark_methods::ITER_ECDSA_ELF;
+const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ECDSA_THEN_HASHES_ID;
+const METHOD_ELF: &[u8] = risczero_benchmark_methods::ECDSA_THEN_HASHES_ELF;
 
 // TODO: is there a cleaner way to compute the proof size? Something directly
 // exposed in the risc0 API?
@@ -54,13 +54,13 @@ fn inner_receipt_size_bytes(proof: &risc0_zkvm::receipt::InnerReceipt) -> u32 {
 }
 
 impl Benchmark for Job<'_> {
-    const NAME: &'static str = "iter_ecdsa";
+    const NAME: &'static str = "ecdsa_then_hashes";
     type Spec = Spec;
     type ComputeOut = ();
     type ProofType = Receipt;
 
     fn job_size(spec: &Self::Spec) -> u32 {
-        spec.niter
+        spec.nhashes
     }
 
     fn output_size_bytes(_output: &Self::ComputeOut, proof: &Self::ProofType) -> u32 {
@@ -76,10 +76,10 @@ impl Benchmark for Job<'_> {
             encoded_verifying_key,
             message,
             signature,
-            niter,
+            nhashes,
         } = spec.clone();
         let env = ExecutorEnv::builder()
-            .add_input(&to_vec(&(encoded_verifying_key, message, signature, niter)).unwrap())
+            .add_input(&to_vec(&(encoded_verifying_key, message, signature, nhashes)).unwrap())
             .build()
             .unwrap();
 

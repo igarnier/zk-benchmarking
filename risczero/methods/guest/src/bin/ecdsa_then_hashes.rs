@@ -8,6 +8,7 @@ use k256::{
     EncodedPoint,
 };
 use risc0_zkvm::guest::env;
+use risc0_zkvm::sha::{Impl, Sha256};
 
 risc0_zkvm::guest::entry!(main);
 
@@ -22,9 +23,12 @@ fn main() {
     let verifying_key = VerifyingKey::from_encoded_point(&encoded_verifying_key).unwrap();
 
     // Verify the signature, panicking if verification fails.
-    for _i in 1..=niter {
-        verifying_key
-            .verify(&message, &signature)
-            .expect("ECDSA signature verification failed");
+    verifying_key
+        .verify(&message, &signature)
+        .expect("ECDSA signature verification failed");
+
+    let mut digest = Impl::hash_bytes(message.as_slice());
+    for _i in 1..niter {
+        digest = Impl::hash_bytes(digest.as_bytes());
     }
 }
