@@ -96,8 +96,8 @@ struct CsvRow<'a> {
     prover: &'a str,
     job_name: &'a str,
     job_size: u32,
-    proof_duration_microsec: u128,
-    verify_duration_microsec: u128,
+    proof_duration_millisec: u128,
+    verify_duration_millisec: u128,
     proof_bytes: u32,
 }
 
@@ -141,8 +141,8 @@ pub fn run_jobs<B: Benchmark>(
             prover: &prover,
             job_name: &job_metrics.job_name,
             job_size: job_metrics.job_size,
-            proof_duration_microsec: job_metrics.proof_duration.as_micros(),
-            verify_duration_microsec: job_metrics.verify_duration.as_micros(),
+            proof_duration_millisec: job_metrics.proof_duration.as_millis(),
+            verify_duration_millisec: job_metrics.verify_duration.as_millis(),
             proof_bytes: job_metrics.proof_bytes,
         })
         .expect("Could not serialize");
