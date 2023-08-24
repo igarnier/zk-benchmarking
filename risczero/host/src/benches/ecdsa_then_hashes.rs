@@ -26,19 +26,19 @@ pub struct Job<'a> {
 fn gen_spec(nhashes: u32) -> Spec {
     // Generate a random secp256k1 keypair and sign the message.
     let signing_key = SigningKey::random(&mut OsRng);
-    let message = b"32 bytes message, including this";
-    let signature: Signature = signing_key.sign(message);
+    let message = b"32 bytes message, including this".to_vec();
+    let signature: Signature = signing_key.sign(message.as_slice());
     let verifying_key = signing_key.verifying_key();
     Spec {
         encoded_verifying_key: verifying_key.to_encoded_point(true),
-        message: message.to_vec(),
+        message,
         signature,
         nhashes,
     }
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    [0, 50, 100, 150, 250, 500, 1000].map(gen_spec).to_vec()
+    [1, 10, 100, 1000, 10_000].map(gen_spec).to_vec()
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ECDSA_THEN_HASHES_ID;

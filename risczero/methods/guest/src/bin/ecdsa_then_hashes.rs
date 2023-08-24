@@ -27,8 +27,9 @@ fn main() {
         .verify(&message, &signature)
         .expect("ECDSA signature verification failed");
 
-    let mut digest = Impl::hash_bytes(message.as_slice());
-    for _i in 1..niter {
-        digest = Impl::hash_bytes(digest.as_bytes());
+    let pair_of_roots = vec![0_u8; 512];
+
+    for _i in 0..niter {
+        let _ = Impl::hash_bytes(pair_of_roots.as_slice());
     }
 }
