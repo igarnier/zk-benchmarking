@@ -26,9 +26,3 @@ impl Name {
 pub const DEFAULT: Name = Name::CpuSHA256;
 
 pub const PROVERS: [Name; 2] = [Name::CpuSHA256, Name::CpuPoseidon];
-
-pub struct Risc0Job<'a, Spec> {
-    pub spec: Spec,
-    pub env: risc0_zkvm::ExecutorEnv<'a>,
-    pub prover: crate::provers::Name,
-}

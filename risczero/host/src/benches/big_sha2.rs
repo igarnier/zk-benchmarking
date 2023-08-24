@@ -1,4 +1,4 @@
-use bincode;
+use crate::helpers::inner_receipt_size_bytes;
 use rand::{rngs::StdRng, RngCore, SeedableRng};
 use risc0_zkvm::serde::{from_slice, to_vec};
 use risc0_zkvm::sha::{Digest, DIGEST_WORDS};
@@ -28,13 +28,6 @@ pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::BIG_SHA2_ID;
 const METHOD_ELF: &[u8] = risczero_benchmark_methods::BIG_SHA2_ELF;
-
-// TODO: is there a cleaner way to compute the proof size? Something directly
-// exposed in the risc0 API?
-fn inner_receipt_size_bytes(proof: &risc0_zkvm::receipt::InnerReceipt) -> u32 {
-    let bytes: Vec<u8> = bincode::serialize(proof).unwrap();
-    bytes.len() as u32
-}
 
 impl Benchmark for Job<'_> {
     const NAME: &'static str = "big_sha2";
