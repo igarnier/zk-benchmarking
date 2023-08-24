@@ -6,6 +6,7 @@ use log::info;
 use serde::Serialize;
 
 pub struct Metrics {
+    pub prover: String,
     pub job_name: String,
     pub job_size: u32,
     pub proof_duration: Duration,
@@ -15,8 +16,9 @@ pub struct Metrics {
 }
 
 impl Metrics {
-    pub fn new(job_name: String, job_size: u32) -> Self {
+    pub fn new(job_name: String, job_size: u32, prover: String) -> Self {
         Metrics {
+            prover,
             job_name,
             job_size,
             proof_duration: Duration::default(),
@@ -27,6 +29,7 @@ impl Metrics {
     }
 
     pub fn println(&self, prefix: &str) {
+        info!("{}prover:             {:?}", prefix, &self.prover);
         info!("{}job_name:           {:?}", prefix, &self.job_name);
         info!("{}job_size:           {:?}", prefix, &self.job_size);
         info!("{}proof_duration:     {:?}", prefix, &self.proof_duration);
@@ -41,12 +44,17 @@ pub trait Benchmark {
     type Spec;
     type ComputeOut: Eq + core::fmt::Debug;
     type ProofType;
+    type Prover;
+
+    fn prover_name(&self) -> String;
 
     fn job_size(spec: &Self::Spec) -> u32;
+
     fn output_size_bytes(output: &Self::ComputeOut, proof: &Self::ProofType) -> u32;
+
     fn proof_size_bytes(proof: &Self::ProofType) -> u32;
 
-    fn new(spec: Self::Spec) -> Self;
+    fn new(spec: &Self::Spec, prover: &Self::Prover) -> Self;
 
     fn spec(&self) -> &Self::Spec;
 
@@ -58,7 +66,11 @@ pub trait Benchmark {
     fn verify_proof(&self, output: &Self::ComputeOut, proof: &Self::ProofType) -> bool;
 
     fn run(&mut self) -> Metrics {
-        let mut metrics = Metrics::new(String::from(Self::NAME), Self::job_size(self.spec()));
+        let mut metrics = Metrics::new(
+            String::from(Self::NAME),
+            Self::job_size(self.spec()),
+            Self::prover_name(&self),
+        );
 
         let (g_output, proof) = {
             let start = Instant::now();
@@ -102,9 +114,9 @@ struct CsvRow<'a> {
 }
 
 pub fn run_jobs<B: Benchmark>(
-    prover: &String,
     out_path: &PathBuf,
     specs: Vec<B::Spec>,
+    provers: Vec<B::Prover>,
 ) -> Vec<Metrics> {
     info!("");
     info!(
@@ -128,27 +140,30 @@ pub fn run_jobs<B: Benchmark>(
 
     let mut all_metrics: Vec<Metrics> = Vec::new();
 
-    for spec in specs {
-        let mut job = B::new(spec);
-        let job_number = all_metrics.len();
+    for spec in &specs {
+        for prover in &provers {
+            let mut job = B::new(&spec, &prover);
+            let job_number = all_metrics.len();
 
-        info!("");
-        info!("+ begin job_number:   {} {}", job_number, B::NAME);
+            info!("");
+            info!("+ begin job_number:   {} {}", job_number, B::NAME);
 
-        let job_metrics = job.run();
-        job_metrics.println("+ ");
-        out.serialize(CsvRow {
-            prover: &prover,
-            job_name: &job_metrics.job_name,
-            job_size: job_metrics.job_size,
-            proof_duration_millisec: job_metrics.proof_duration.as_millis(),
-            verify_duration_millisec: job_metrics.verify_duration.as_millis(),
-            proof_bytes: job_metrics.proof_bytes,
-        })
-        .expect("Could not serialize");
+            let job_metrics = job.run();
+            job_metrics.println("+ ");
+            let prover = B::prover_name(&job);
+            out.serialize(CsvRow {
+                prover: &prover,
+                job_name: &job_metrics.job_name,
+                job_size: job_metrics.job_size,
+                proof_duration_millisec: job_metrics.proof_duration.as_millis(),
+                verify_duration_millisec: job_metrics.verify_duration.as_millis(),
+                proof_bytes: job_metrics.proof_bytes,
+            })
+            .expect("Could not serialize");
 
-        info!("+ end job_number:     {}", job_number);
-        all_metrics.push(job_metrics);
+            info!("+ end job_number:     {}", job_number);
+            all_metrics.push(job_metrics);
+        }
     }
 
     out.flush().expect("Could not flush");

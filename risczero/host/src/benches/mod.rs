@@ -4,3 +4,4 @@ pub mod ecdsa_then_hashes;
 pub mod fact;
 pub mod iter_ecdsa;
 pub mod iter_sha2;
+pub mod provers;

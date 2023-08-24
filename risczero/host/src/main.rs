@@ -32,37 +32,67 @@ fn main() {
     init_logging();
     let cli = Cli::parse();
 
-    let prover = String::from("risczero");
-
     match cli.command {
         Command::All => {
-            let _ = run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());
-            let _ = run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
-            let _ = run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
-            let _ = run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
-            let _ = run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+            let _ = run_jobs::<iter_ecdsa::Job>(
+                &cli.out,
+                iter_ecdsa::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
+            let _ = run_jobs::<iter_sha2::Job>(
+                &cli.out,
+                iter_sha2::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
+            let _ = run_jobs::<big_sha2::Job>(
+                &cli.out,
+                big_sha2::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
+            let _ = run_jobs::<fact::Job>(&cli.out, fact::new_jobs(), provers::PROVERS.to_vec());
+            let _ = run_jobs::<bubble_sort::Job>(
+                &cli.out,
+                bubble_sort::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
         }
         Command::EcdsaThenHashes => {
             let _ = run_jobs::<ecdsa_then_hashes::Job>(
-                &prover,
                 &cli.out,
                 ecdsa_then_hashes::new_jobs(),
+                provers::PROVERS.to_vec(),
             );
         }
         Command::IterEcdsa => {
-            let _ = run_jobs::<iter_ecdsa::Job>(&prover, &cli.out, iter_ecdsa::new_jobs());
+            let _ = run_jobs::<iter_ecdsa::Job>(
+                &cli.out,
+                iter_ecdsa::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
         }
         Command::IterSha2 => {
-            let _ = run_jobs::<iter_sha2::Job>(&prover, &cli.out, iter_sha2::new_jobs());
+            let _ = run_jobs::<iter_sha2::Job>(
+                &cli.out,
+                iter_sha2::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
         }
         Command::BigSha2 => {
-            let _ = run_jobs::<big_sha2::Job>(&prover, &cli.out, big_sha2::new_jobs());
+            let _ = run_jobs::<big_sha2::Job>(
+                &cli.out,
+                big_sha2::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
         }
         Command::Fact => {
-            let _ = run_jobs::<fact::Job>(&prover, &cli.out, fact::new_jobs());
+            let _ = run_jobs::<fact::Job>(&cli.out, fact::new_jobs(), provers::PROVERS.to_vec());
         }
         Command::BubbleSort => {
-            let _ = run_jobs::<bubble_sort::Job>(&prover, &cli.out, bubble_sort::new_jobs());
+            let _ = run_jobs::<bubble_sort::Job>(
+                &cli.out,
+                bubble_sort::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
         }
     }
 }

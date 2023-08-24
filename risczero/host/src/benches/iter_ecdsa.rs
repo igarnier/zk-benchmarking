@@ -4,12 +4,10 @@ use k256::{
     EncodedPoint,
 };
 use rand_core::OsRng;
-use risc0_zkvm::prove::Prover;
 use risc0_zkvm::serde::to_vec;
 use risc0_zkvm::sha::DIGEST_WORDS;
-use risc0_zkvm::{default_prover, ExecutorEnv, Receipt};
+use risc0_zkvm::{ExecutorEnv, Receipt};
 use rustbench::Benchmark;
-use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct Spec {
@@ -22,7 +20,7 @@ pub struct Spec {
 pub struct Job<'a> {
     pub spec: Spec,
     pub env: ExecutorEnv<'a>,
-    pub prover: Rc<dyn Prover>,
+    pub prover: crate::provers::Name,
 }
 
 fn gen_spec(niter: u32) -> Spec {
@@ -58,6 +56,11 @@ impl Benchmark for Job<'_> {
     type Spec = Spec;
     type ComputeOut = ();
     type ProofType = Receipt;
+    type Prover = crate::provers::Name;
+
+    fn prover_name(&self) -> String {
+        self.prover.to_string()
+    }
 
     fn job_size(spec: &Self::Spec) -> u32 {
         spec.niter
@@ -71,21 +74,25 @@ impl Benchmark for Job<'_> {
         inner_receipt_size_bytes(&proof.inner)
     }
 
-    fn new(spec: Self::Spec) -> Self {
-        let Spec {
-            encoded_verifying_key,
-            message,
-            signature,
-            niter,
-        } = spec.clone();
+    fn new(spec: &Self::Spec, prover: &Self::Prover) -> Self {
         let env = ExecutorEnv::builder()
-            .add_input(&to_vec(&(encoded_verifying_key, message, signature, niter)).unwrap())
+            .add_input(
+                &to_vec(&(
+                    spec.encoded_verifying_key,
+                    &spec.message,
+                    spec.signature,
+                    spec.niter,
+                ))
+                .unwrap(),
+            )
             .build()
             .unwrap();
 
-        let prover = default_prover();
-
-        Job { spec, env, prover }
+        Job {
+            spec: spec.clone(),
+            env,
+            prover: prover.clone(),
+        }
     }
 
     fn spec(&self) -> &Self::Spec {
@@ -97,8 +104,8 @@ impl Benchmark for Job<'_> {
     }
 
     fn guest_compute(&mut self) -> (Self::ComputeOut, Self::ProofType) {
-        let Receipt { inner, journal } =
-            self.prover.prove_elf(self.env.clone(), METHOD_ELF).unwrap();
+        let prover = self.prover.get_prover();
+        let Receipt { inner, journal } = prover.prove_elf(self.env.clone(), METHOD_ELF).unwrap();
 
         ((), Receipt { inner, journal })
     }
