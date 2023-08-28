@@ -146,7 +146,12 @@ pub fn run_jobs<B: Benchmark>(
             let job_number = all_metrics.len();
 
             info!("");
-            info!("+ begin job_number:   {} {}", job_number, B::NAME);
+            info!(
+                "+ begin job_number:   {} {} {}",
+                job_number,
+                B::NAME,
+                job.prover_name()
+            );
 
             let job_metrics = job.run();
             job_metrics.println("+ ");
