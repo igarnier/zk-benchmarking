@@ -145,9 +145,8 @@ pub fn run_jobs<B: Benchmark>(
             let mut job = B::new(&spec, &prover);
             let job_number = all_metrics.len();
 
-            info!("");
-            info!(
-                "+ begin job_number:   {} {} {}",
+            println!(
+                "begin job_number:   {} {} {}",
                 job_number,
                 B::NAME,
                 job.prover_name()
