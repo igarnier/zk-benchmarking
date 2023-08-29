@@ -12,12 +12,7 @@ pub fn main() {
 
     let mut digest = Impl::hash_bytes(data.as_slice());
 
-    // Splicing a trivial increment allows for the zk prover to properly
-    // segment the computation; otherwise it fails for high values of [num_iter].
-    let mut c = 0;
-
     for _ in 1..num_iter {
-        c = c + 1;
         digest = Impl::hash_bytes(digest.as_bytes());
     }
 

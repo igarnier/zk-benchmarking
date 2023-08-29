@@ -23,6 +23,6 @@ impl Name {
     }
 }
 
-pub const DEFAULT: Name = Name::CpuSHA256;
+// pub const DEFAULT: Name = Name::CpuSHA256;
 
 pub const PROVERS: [Name; 2] = [Name::CpuSHA256, Name::CpuPoseidon];

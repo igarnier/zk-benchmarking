@@ -5,4 +5,5 @@ pub mod fact;
 pub mod helpers;
 pub mod iter_ecdsa;
 pub mod iter_sha2;
+pub mod iter_sha2_pure;
 pub mod provers;

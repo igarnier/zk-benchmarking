@@ -23,71 +23,70 @@ enum Command {
     EcdsaThenHashes,
     IterEcdsa,
     IterSha2,
+    IterSha2Pure,
     BigSha2,
     Fact,
     BubbleSort,
 }
 
-fn main() {
-    init_logging();
-    let cli = Cli::parse();
+use crate::Command::*;
 
-    match cli.command {
-        Command::All => {
-            let _ = run_jobs::<iter_ecdsa::Job>(
-                &cli.out,
-                iter_ecdsa::new_jobs(),
-                provers::PROVERS.to_vec(),
-            );
-            let _ = run_jobs::<iter_sha2::Job>(
-                &cli.out,
-                iter_sha2::new_jobs(),
-                provers::PROVERS.to_vec(),
-            );
-            let _ = run_jobs::<big_sha2::Job>(
-                &cli.out,
-                big_sha2::new_jobs(),
-                provers::PROVERS.to_vec(),
-            );
-            let _ = run_jobs::<fact::Job>(&cli.out, fact::new_jobs(), provers::PROVERS.to_vec());
-            let _ = run_jobs::<bubble_sort::Job>(
-                &cli.out,
-                bubble_sort::new_jobs(),
-                provers::PROVERS.to_vec(),
-            );
+const ALL: [Command; 7] = [
+    EcdsaThenHashes,
+    IterEcdsa,
+    IterSha2,
+    IterSha2Pure,
+    BigSha2,
+    Fact,
+    BubbleSort,
+];
+
+fn run_command(cli: &Cli, command: &Command) -> () {
+    match command {
+        All => {
+            for c in ALL {
+                run_command(cli, &c)
+            }
         }
-        Command::EcdsaThenHashes => {
+        EcdsaThenHashes => {
             let _ = run_jobs::<ecdsa_then_hashes::Job>(
                 &cli.out,
                 ecdsa_then_hashes::new_jobs(),
                 provers::PROVERS.to_vec(),
             );
         }
-        Command::IterEcdsa => {
+        IterEcdsa => {
             let _ = run_jobs::<iter_ecdsa::Job>(
                 &cli.out,
                 iter_ecdsa::new_jobs(),
                 provers::PROVERS.to_vec(),
             );
         }
-        Command::IterSha2 => {
+        IterSha2 => {
             let _ = run_jobs::<iter_sha2::Job>(
                 &cli.out,
                 iter_sha2::new_jobs(),
                 provers::PROVERS.to_vec(),
             );
         }
-        Command::BigSha2 => {
+        IterSha2Pure => {
+            let _ = run_jobs::<iter_sha2_pure::Job>(
+                &cli.out,
+                iter_sha2_pure::new_jobs(),
+                provers::PROVERS.to_vec(),
+            );
+        }
+        BigSha2 => {
             let _ = run_jobs::<big_sha2::Job>(
                 &cli.out,
                 big_sha2::new_jobs(),
                 provers::PROVERS.to_vec(),
             );
         }
-        Command::Fact => {
+        Fact => {
             let _ = run_jobs::<fact::Job>(&cli.out, fact::new_jobs(), provers::PROVERS.to_vec());
         }
-        Command::BubbleSort => {
+        BubbleSort => {
             let _ = run_jobs::<bubble_sort::Job>(
                 &cli.out,
                 bubble_sort::new_jobs(),
@@ -95,4 +94,11 @@ fn main() {
             );
         }
     }
+}
+
+fn main() {
+    init_logging();
+    let cli = Cli::parse();
+
+    run_command(&cli, &cli.command);
 }

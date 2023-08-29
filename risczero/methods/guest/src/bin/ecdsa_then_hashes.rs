@@ -29,7 +29,12 @@ fn main() {
 
     let pair_of_roots = vec![0_u8; 512];
 
+    // Splicing a trivial increment allows for the zk prover to properly
+    // segment the computation; otherwise it fails for high values of [num_iter].
+    let mut c = 0;
+
     for _i in 0..niter {
+        c = c + 1;
         let _ = Impl::hash_bytes(pair_of_roots.as_slice());
     }
 }
