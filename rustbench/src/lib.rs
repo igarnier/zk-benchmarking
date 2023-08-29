@@ -69,7 +69,7 @@ pub trait Benchmark {
         let mut metrics = Metrics::new(
             String::from(Self::NAME),
             Self::job_size(self.spec()),
-            Self::prover_name(&self),
+            Self::prover_name(self),
         );
 
         let (g_output, proof) = {
@@ -142,7 +142,7 @@ pub fn run_jobs<B: Benchmark>(
 
     for spec in &specs {
         for prover in &provers {
-            let mut job = B::new(&spec, &prover);
+            let mut job = B::new(spec, prover);
             let job_number = all_metrics.len();
 
             info!("");
@@ -165,6 +165,7 @@ pub fn run_jobs<B: Benchmark>(
                 proof_bytes: job_metrics.proof_bytes,
             })
             .expect("Could not serialize");
+            out.flush().expect("Could not flush");
 
             info!("+ end job_number:     {}", job_number);
             all_metrics.push(job_metrics);
