@@ -118,8 +118,7 @@ pub fn run_jobs<B: Benchmark>(
     specs: &Vec<B::Spec>,
     provers: &Vec<B::Prover>,
 ) -> Vec<Metrics> {
-    info!("");
-    info!(
+    println!(
         "Running {} jobs; saving output to {}",
         specs.len(),
         out_path.display()
@@ -145,9 +144,8 @@ pub fn run_jobs<B: Benchmark>(
             let mut job = B::new(spec, prover);
             let job_number = all_metrics.len();
 
-            info!("");
-            info!(
-                "+ begin job_number:   {} {} {}",
+            println!(
+                "Benchmarking:   {} {} {}",
                 job_number,
                 B::NAME,
                 job.prover_name()
@@ -167,13 +165,11 @@ pub fn run_jobs<B: Benchmark>(
             .expect("Could not serialize");
             out.flush().expect("Could not flush");
 
-            info!("+ end job_number:     {}", job_number);
             all_metrics.push(job_metrics);
         }
     }
 
     out.flush().expect("Could not flush");
-    info!("Finished {} jobs", all_metrics.len());
 
     all_metrics
 }
