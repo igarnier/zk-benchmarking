@@ -115,8 +115,8 @@ struct CsvRow<'a> {
 
 pub fn run_jobs<B: Benchmark>(
     out_path: &PathBuf,
-    specs: Vec<B::Spec>,
-    provers: Vec<B::Prover>,
+    specs: &Vec<B::Spec>,
+    provers: &Vec<B::Prover>,
 ) -> Vec<Metrics> {
     info!("");
     info!(
@@ -140,8 +140,8 @@ pub fn run_jobs<B: Benchmark>(
 
     let mut all_metrics: Vec<Metrics> = Vec::new();
 
-    for spec in &specs {
-        for prover in &provers {
+    for spec in specs {
+        for prover in provers {
             let mut job = B::new(spec, prover);
             let job_number = all_metrics.len();
 
