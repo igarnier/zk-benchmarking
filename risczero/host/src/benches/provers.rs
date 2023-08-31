@@ -21,11 +21,11 @@ impl Name {
         match self {
             Self::CpuSHA256 => risc0_zkvm::prove::get_prover("cpu"),
             Self::CpuPoseidon => risc0_zkvm::prove::get_prover("cpu:poseidon"),
-            Self::Bonsai => risc0_zkvm::prove::get_prover("bonsai"),
+            Self::Bonsai => risc0_zkvm::prove::get_prover("$bonsai"),
         }
     }
 }
 
 // pub const DEFAULT: Name = Name::CpuSHA256;
 
-pub const PROVERS: [Name; 3] = [Name::CpuSHA256, Name::CpuPoseidon, Name::Bonsai];
+pub const PROVERS: [Name; 3] = [Name::Bonsai, Name::CpuSHA256, Name::CpuPoseidon];

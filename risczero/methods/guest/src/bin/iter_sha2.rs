@@ -17,7 +17,7 @@ pub fn main() {
     let mut c = 0;
 
     for _ in 1..num_iter {
-        c = c + 1;
+        c = std::hint::black_box(c + 1);
         digest = Impl::hash_bytes(digest.as_bytes());
     }
 

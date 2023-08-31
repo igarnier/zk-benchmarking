@@ -38,7 +38,9 @@ fn gen_spec(nhashes: u32) -> Spec {
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    [1, 10, 100, 1000, 10_000].map(gen_spec).to_vec()
+    [1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+        .map(gen_spec)
+        .to_vec()
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ECDSA_THEN_HASHES_ID;

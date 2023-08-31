@@ -12,14 +12,14 @@ pub struct Job<'a> {
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    vec![1, 10, 100, 1000, 10_000]
+    vec![1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ITER_SHA2_PURE_ID;
 const METHOD_ELF: &[u8] = risczero_benchmark_methods::ITER_SHA2_PURE_ELF;
 
 impl Benchmark for Job<'_> {
-    const NAME: &'static str = "iter_sha2";
+    const NAME: &'static str = "iter_sha2_pure";
     type Spec = u32;
     type ComputeOut = Digest;
     type ProofType = Receipt;
