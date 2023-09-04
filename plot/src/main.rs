@@ -1,5 +1,5 @@
 use plotters::prelude::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
 type Table = HashMap<(String, String), Vec<(usize, f32)>>;
@@ -70,31 +70,33 @@ fn load_csv() -> (Table, Table, Table) {
     (proof_durations, verify_durations, proof_sizes)
 }
 
-fn plot_data(filename: &str, title: &str, data: &Vec<(usize, f32)>) {
+const PROVERS: [&str; 3] = ["Bonsai", "CpuSHA256", "CpuPoseidon"];
+
+fn plot_data(filename: &str, title: &str, data: &Vec<Vec<(usize, f32)>>) {
     let root_area = BitMapBackend::new(filename, (1024, 768)).into_drawing_area();
 
     root_area.fill(&WHITE).unwrap();
 
     let root_area = root_area.titled(title, ("sans-serif", 60)).unwrap();
 
-    let points = data.iter().map(|(s, x)| (*s as f32, *x));
-
     let (xmin, xmax) = data
         .iter()
+        .flatten()
         .map(|(x, _y)| *x as f32)
         .fold((f32::INFINITY, f32::NEG_INFINITY), |(min, max), x| {
             (min.min(x), max.max(x))
         });
 
-    let (ymin, ymax) = data
+    let (_ymin, ymax) = data
         .iter()
-        .map(|(_x, y)| *y as f32)
+        .flatten()
+        .map(|(_x, y)| *y)
         .fold((f32::INFINITY, f32::NEG_INFINITY), |(min, max), y| {
             (min.min(y), max.max(y))
         });
 
     let xrange = xmin..xmax;
-    let yrange = ymin..ymax;
+    let yrange = 0.0..(ymax * 1.5);
 
     let mut cc = ChartBuilder::on(&root_area)
         .margin(5)
@@ -112,8 +114,28 @@ fn plot_data(filename: &str, title: &str, data: &Vec<(usize, f32)>) {
         .draw()
         .unwrap();
 
-    let series = LineSeries::new(points, &RED);
-    cc.draw_series(series).unwrap();
+    data.iter().enumerate().for_each(|(index, v)| {
+        let prover = PROVERS[index];
+        let points = v.iter().map(|(s, x)| (*s as f32, *x));
+        let series = LineSeries::new(points, &Palette99::pick(index));
+        cc.draw_series(series)
+            .unwrap()
+            .label(prover)
+            .legend(move |(x, y)| {
+                PathElement::new(vec![(x, y), (x + 20, y)], &Palette99::pick(index))
+            });
+    });
+
+    cc.configure_series_labels()
+        .border_style(BLACK)
+        .draw()
+        .unwrap();
+
+    // data.iter().for_each(|v| {
+    //     let points = v.iter().map(|(s, x)| (*s as f32, *x));
+    //     let series = LineSeries::new(points, &RED);
+    //     cc.draw_series(series).unwrap();
+    // });
 
     root_area.present().expect("Unable to write result to file");
 }
@@ -122,32 +144,69 @@ fn display() {
     // Plotting
     let (proof_durations, verify_durations, proof_sizes) = load_csv();
 
-    proof_durations.into_iter().for_each(|(k, v)| {
-        let (job_name, prover) = k;
+    let all_data = [
+        (&proof_durations, "proving_time"),
+        (&verify_durations, "verifying_time"),
+        (&proof_sizes, "proof_size"),
+    ];
 
-        let filename = format!("proving_time_{}_{}.png", job_name, prover);
-        let title = format!("proving time {} {}", job_name, prover);
+    for (hmap, name) in all_data {
+        let mut jobs = HashSet::new();
+        hmap.keys().for_each(|(job_name, _)| {
+            let _ = jobs.insert(job_name);
+        });
 
-        plot_data(&filename, &title, &v)
-    });
+        for j in jobs {
+            // proving time
+            let mut data = Vec::new();
 
-    verify_durations.into_iter().for_each(|(k, v)| {
-        let (job_name, prover) = k;
+            for prover in PROVERS {
+                let k = &(j.clone(), String::from(prover));
+                data.push(hmap[k].clone());
+            }
 
-        let filename = format!("verifying_time_{}_{}.png", job_name, prover);
-        let title = format!("verifying time {} {}", job_name, prover);
+            let filename = format!("{}_{}.png", name, j);
+            let title = format!("{} {}", name, j);
 
-        plot_data(&filename, &title, &v)
-    });
+            plot_data(&filename, &title, &data)
+        }
+    }
 
-    proof_sizes.into_iter().for_each(|(k, v)| {
-        let (job_name, prover) = k;
+    // for prover in PROVERS {
+    //     let data = jobs.iter ().map (|job|
+    //                                  {
+    //                                      let k = (job_name, String::from(prover));
+    //                                      let data =
+    //                                  }
+    //     )
+    // }
 
-        let filename = format!("proof_size_{}_{}.png", job_name, prover);
-        let title = format!("proof size {} {}", job_name, prover);
+    // proof_durations.into_iter().for_each(|(k, v)| {
+    //     let (job_name, prover) = k;
 
-        plot_data(&filename, &title, &v)
-    });
+    //     let filename = format!("proving_time_{}_{}.png", job_name, prover);
+    //     let title = format!("proving time {} {}", job_name, prover);
+
+    //     plot_data(&filename, &title, &v)
+    // });
+
+    // verify_durations.into_iter().for_each(|(k, v)| {
+    //     let (job_name, prover) = k;
+
+    //     let filename = format!("verifying_time_{}_{}.png", job_name, prover);
+    //     let title = format!("verifying time {} {}", job_name, prover);
+
+    //     plot_data(&filename, &title, &v)
+    // });
+
+    // proof_sizes.into_iter().for_each(|(k, v)| {
+    //     let (job_name, prover) = k;
+
+    //     let filename = format!("proof_size_{}_{}.png", job_name, prover);
+    //     let title = format!("proof size {} {}", job_name, prover);
+
+    //     plot_data(&filename, &title, &v)
+    // });
 }
 
 fn main() {
