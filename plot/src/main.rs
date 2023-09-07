@@ -49,10 +49,12 @@ fn load_csv() -> (Table, Table, Table) {
             .parse::<f32>()
             .unwrap();
         let proof_size = row[index["proof_bytes"]].parse::<f32>().unwrap();
+
+        // cast milliseconds to seconds for proof duration
         proof_durations
             .entry(key.clone())
             .or_insert(Vec::new())
-            .push((job_size, proof_duration));
+            .push((job_size, proof_duration / 1_000.0));
         verify_durations
             .entry(key.clone())
             .or_insert(Vec::new())
@@ -122,7 +124,7 @@ fn plot_data(filename: &str, title: &str, data: &Vec<Vec<(usize, f32)>>) {
             .unwrap()
             .label(prover)
             .legend(move |(x, y)| {
-                PathElement::new(vec![(x, y), (x + 20, y)], &Palette99::pick(index))
+                PathElement::new(vec![(x, y), (x + 20, y)], Palette99::pick(index))
             });
     });
 
