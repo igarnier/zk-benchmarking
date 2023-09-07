@@ -5,14 +5,20 @@
 //     bytes.len() as u32
 // }
 
+use risc0_zkvm::receipt::InnerReceipt::*;
+use risc0_zkvm::receipt::SegmentReceipts;
+
 pub fn inner_receipt_size_bytes(proof: &risc0_zkvm::receipt::InnerReceipt) -> u32 {
     match proof {
-        risc0_zkvm::receipt::InnerReceipt::Flat(_) => {}
-        risc0_zkvm::receipt::InnerReceipt::Succinct(succinct) => {
+        Flat(SegmentReceipts(vec)) => {
+            let segments = vec.len();
+            println!("Number of segments = {}", segments)
+        }
+        Succinct(succinct) => {
             let size = succinct.seal.len();
             println!("Seal length: u32 elements = {}", size)
         }
-        risc0_zkvm::receipt::InnerReceipt::Fake => {}
+        Fake => {}
     }
     let bytes: Vec<u8> = bincode::serialize(proof).unwrap();
     bytes.len() as u32
