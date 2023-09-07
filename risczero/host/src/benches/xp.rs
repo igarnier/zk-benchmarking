@@ -13,7 +13,7 @@ pub struct Job<'a> {
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    vec![5, 10, 15, 20, 25]
+    vec![100, 500, 1000, 10_000]
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::XP_ID;
