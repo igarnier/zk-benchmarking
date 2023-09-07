@@ -6,13 +6,23 @@
 // }
 
 use risc0_zkvm::receipt::InnerReceipt::*;
+use risc0_zkvm::receipt::SegmentReceipt;
 use risc0_zkvm::receipt::SegmentReceipts;
 
 pub fn inner_receipt_size_bytes(proof: &risc0_zkvm::receipt::InnerReceipt) -> u32 {
     match proof {
         Flat(SegmentReceipts(vec)) => {
             let segments = vec.len();
-            println!("Number of segments = {}", segments)
+            println!("Number of segments = {}", segments);
+            for seg in vec {
+                let SegmentReceipt {
+                    seal,
+                    index,
+                    hashfn: _,
+                } = seg;
+                let size = seal.len();
+                println!("    Seal {} length: u32 elements = {}", index, size)
+            }
         }
         Succinct(succinct) => {
             let size = succinct.seal.len();
