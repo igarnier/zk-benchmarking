@@ -15,7 +15,7 @@ fn pow(n: u64) -> u64 {
 pub fn main() {
     let a: u64 = env::read();
     let to_hash = vec![0_u8; 20];
-    let mut digest = Impl::hash_bytes(to_hash.as_slice());
+    let digest = Impl::hash_bytes(to_hash.as_slice());
     let result = pow(a);
     env::commit(&result);
 }
