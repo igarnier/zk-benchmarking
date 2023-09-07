@@ -27,11 +27,13 @@ enum Command {
     BigSha2,
     Fact,
     BubbleSort,
+    Xp,
+    Xp2,
 }
 
 use crate::Command::*;
 
-const ALL: [Command; 7] = [
+const ALL: [Command; 9] = [
     EcdsaThenHashes,
     IterEcdsa,
     IterSha2,
@@ -39,6 +41,8 @@ const ALL: [Command; 7] = [
     BigSha2,
     Fact,
     BubbleSort,
+    Xp,
+    Xp2,
 ];
 
 fn run_command(cli: &Cli, command: &Command, provers: &Vec<provers::Name>) -> () {
@@ -72,6 +76,12 @@ fn run_command(cli: &Cli, command: &Command, provers: &Vec<provers::Name>) -> ()
         }
         BubbleSort => {
             let _ = run_jobs::<bubble_sort::Job>(&cli.out, &bubble_sort::new_jobs(), provers);
+        }
+        Xp => {
+            let _ = run_jobs::<xp::Job>(&cli.out, &xp::new_jobs(), provers);
+        }
+        Xp2 => {
+            let _ = run_jobs::<xp2::Job>(&cli.out, &xp2::new_jobs(), provers);
         }
     }
 }
