@@ -12,7 +12,8 @@ pub struct Job<'a> {
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    vec![1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    //    vec![1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    vec![0]
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ITER_SHA2_ID;

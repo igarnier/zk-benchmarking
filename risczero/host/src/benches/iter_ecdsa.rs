@@ -38,7 +38,8 @@ fn gen_spec(niter: u32) -> Spec {
 }
 
 pub fn new_jobs() -> Vec<<Job<'static> as Benchmark>::Spec> {
-    [1, 2, 3, 4].map(gen_spec).to_vec()
+    //    [1, 2, 3, 4].map(gen_spec).to_vec()
+    [1].map(gen_spec).to_vec()
 }
 
 const METHOD_ID: [u32; DIGEST_WORDS] = risczero_benchmark_methods::ITER_ECDSA_ID;
